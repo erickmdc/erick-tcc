@@ -1,0 +1,140 @@
+{
+  "players": [
+    {
+      "name": "Mohammed Salah",
+      "id": "1",
+      "price": 30.00,
+      "team": "Liverpool",
+      "position": "Pivô"
+    },
+    {
+      "name": "Roberto Firmino 2",
+      "id": "2",
+      "price": 25.00,
+      "team": "Liverpool",
+      "position": "Pivô"
+    },
+    {
+      "name": "De Rossi",
+      "id": "3",
+      "price": 20.00,
+      "team": "Roma",
+      "position": "Ala"
+    },
+    {
+      "name": "Alisson",
+      "id": "4",
+      "price": 15.00,
+      "team": "Roma",
+      "position": "Goleiro"
+    },
+    {
+      "name": "Luka Modric",
+      "id": "5",
+      "price": 20.00,
+      "team": "Real Madrid",
+      "position": "Ala"
+    },
+    {
+      "name": "Van Dijk",
+      "id": "6",
+      "price": 10.00,
+      "team": "Liverpool",
+      "position": "Fixo"
+    },
+    {
+      "name": "Sergio Ramos",
+      "id": "7",
+      "price": 15.00,
+      "team": "Real Madrid",
+      "position": "Fixo"
+    },
+    {
+      "name": "Marcelo",
+      "id": "8",
+      "price": 20.00,
+      "team": "Real Madrid",
+      "position": "Fixo"
+    },
+    {
+      "name": "Thomas Muller",
+      "id": "9",
+      "price": 20.00,
+      "team": "Bayern Munchen",
+      "position": "Ala"
+    },
+    {
+      "name": "Robert Lewandowski",
+      "id": "10",
+      "price": 20.00,
+      "team": "Bayern Munchen",
+      "position": "Pivô"
+    },
+    {
+      "name": "David Alaba",
+      "id": "11",
+      "price": 10.00,
+      "team": "Bayern Munchen",
+      "position": "Fixo"
+    },
+    {
+      "name": "Keylor Navas",
+      "id": "12",
+      "price": 10.00,
+      "team": "Real Madrid",
+      "position": "Goleiro"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Real Madrid",
+      "id": "1",
+      "squad": "5 stars"
+    },
+    {
+      "name": "Roma",
+      "id": "2",
+      "squad": "4 stars"
+    },
+    {
+      "name": "Bayern Munchen",
+      "id": "3",
+      "squad": "5 stars"
+    },
+    {
+      "name": "Liverpool",
+      "id": "4",
+      "squad": "4.5 stars"
+    }
+  ],
+  "mySquad": [
+    {
+      "name": "Mohammed Salah",
+      "id": "10",
+      "price": 30.00,
+      "team": "Liverpool",
+      "position": "Pivô"
+    },
+    {
+      "name": "Roberto Firmino",
+      "id": "20",
+      "price": 25.00,
+      "team": "Liverpool",
+      "position": "Pivô"
+    },
+    {
+      "name": "De Rossi",
+      "id": "30",
+      "price": 20.00,
+      "team": "Roma",
+      "position": "Ala"
+    },
+    {
+      "name": "Alisson",
+      "id": "40",
+      "price": 15.00,
+      "team": "Roma",
+      "position": "Goleiro"
+    }
+  ]
+}
