@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import DB from '../db';
+//import DB from '../db';
 import { NotFound } from "./Errors";
 import Layout from "./Layout";
 import Players from "./Players";
@@ -16,15 +16,9 @@ class App extends Component {
     mySquad: []
   }
 
-  db = new DB();
-
   componentDidMount() {
     fetch('http://localhost:3002/players')
       .then(res => res.json())
-      .then(players => {
-        this.db.addPlayers(players);
-        return this.db.getPlayers();
-      })
       .then(players => this.setState({ players }))
     fetch('http://localhost:3002/teams')
       .then(res => res.json())

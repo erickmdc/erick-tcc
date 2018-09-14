@@ -20,7 +20,7 @@ export default function register() {
   //   }
 
     window.addEventListener('load', () => {
-      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+      const swUrl = `${process.env.PUBLIC_URL}/sw.js`;
 
       registerValidSW(swUrl);
        if (isLocalhost) {
