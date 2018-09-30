@@ -44,6 +44,10 @@ class Squad extends Component {
     testFetch() {
         fetch('http://localhost:3002/players')
             .then(res => res.json())
+            .then(p => {
+                let x = p;
+                return x;
+            })
     }
 
     render() {

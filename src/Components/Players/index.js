@@ -30,6 +30,8 @@ class Players extends Component {
     state = {
         team: '',
         player: {},
+        teams: [],
+        players: [],
         openMobileDialog: false
     }
 
@@ -45,7 +47,7 @@ class Players extends Component {
     };
 
     handlePlayerSelect = id => {
-        const { players } = this.props;
+        const { players } = this.state;
         this.setState({
             player: players.find(p => p.id === id),
             openMobileDialog: true
@@ -60,9 +62,18 @@ class Players extends Component {
         this.setState({ openMobileDialog: false });
     };
 
+    componentDidMount() {
+        fetch('http://localhost:3002/players')
+            .then(res => res.json())
+            .then(players => this.setState({ players }))
+        fetch('http://localhost:3002/teams')
+            .then(res => res.json())
+            .then(teams => this.setState({ teams }))
+    }
+
     render() {
-        const { team, player, openMobileDialog } = this.state;
-        const { classes, players, teams } = this.props;
+        const { team, player, openMobileDialog, players, teams } = this.state;
+        const { classes } = this.props;
 
         return (
             <Fragment>
@@ -105,7 +116,7 @@ class Players extends Component {
                         </Paper>
                     </Grid>
                     <Hidden smDown>
-                        <Grid item sm={6} style={{margin:0}}>
+                        <Grid item sm={6} style={{ margin: 0 }}>
                             <Paper className={classes.Paper}>
                                 <Player player={player} />
                             </Paper>

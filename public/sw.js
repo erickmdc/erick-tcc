@@ -1,32 +1,59 @@
 self.importScripts('idb.js');
 
 self.addEventListener('install', function (event) {
+  event.waitUntil(createDB());
   console.log('Service worker installing...');
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', function (event) {
-  createDB();
   console.log('Service worker activating...');
 });
 
 // I'm a new service worker
 
 self.addEventListener('fetch', function (event) {
-  if(event.request.url.includes('/players')) {
-    console.log('Fetching:', event.request.url);
-    return getPlayers();
+  if (event.request.url.includes('/players')) {
+    event.respondWith(getPlayers());
+    event.waitUntil(update(event.request))
+    //.then(response => refresh(response)));
   }
 });
 
 self.addEventListener('fetch', function (event) {
-  if(event.request.url.includes('/teams')) {
+  if (event.request.url.includes('/teams')) {
     console.log('Fetching:', event.request.url);
     return getPlayers();
   }
 });
 
+function update(request) {
+  return fetch(request)
+    .then(res => res.json())
+    .then(players => {
+      addPlayers(players);
+      return players;
+    });
+}
+
+function refresh(response) {
+  return self.clients.matchAll().then(function (clients) {
+    clients.forEach(function (client) {
+      var message = {
+        type: 'refresh',
+        url: response.url,
+        eTag: response.headers.get('ETag')
+      };
+      client.postMessage(JSON.stringify(message));
+    });
+  });
+}
+
+function test() {
+  return fetch('https://store-tcc.herokuapp.com/teams')
+}
+
 function createDB() {
+  console.log('Creating');
   idb.open('cartola-database', 1, upgradeDb => {
     let store;
     switch (upgradeDb.oldVersion) {
@@ -160,18 +187,3 @@ function getPlayers() {
     return store.getAll();
   });
 }
-
-// self.addEventListener('fetch', event => {
-//   console.log("aqui");
-//   //const db = idb;
-//   if (event.request.method !== 'GET') return;
-//   event.respondWith(async function () {
-//     //const players = await db.getPlayers();
-//     if (players) {
-//       event.waitUntil(db.addPlayers(event.request));
-//       return players;
-//     }
-//     // If we didn't find a match in the cache, use the network. // " && sw-precache --config=sw-precache-config.js",
-//     return fetch(event.request).then(response => db.addPlayers(response)).then(response => response);
-//   }());
-// });

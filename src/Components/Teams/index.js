@@ -27,11 +27,13 @@ const styles = theme => ({
 class Teams extends Component {
     state = {
         team: {},
+        players: [],
+        teams: [],
         openMobileDialog: false
     }
 
     handleSelect = id => {
-        const { teams } = this.props;
+        const { teams } = this.state;
         this.setState({
             team: teams.find(p => p.id === id),
             openMobileDialog: true
@@ -46,9 +48,18 @@ class Teams extends Component {
         this.setState({ openMobileDialog: false });
     };
 
+    componentDidMount() {
+        fetch('http://localhost:3002/players')
+            .then(res => res.json())
+            .then(players => this.setState({ players }))
+        fetch('http://localhost:3002/teams')
+            .then(res => res.json())
+            .then(teams => this.setState({ teams }))
+    }
+
     render() {
-        const { team, openMobileDialog } = this.state;
-        const { classes, players, teams } = this.props;
+        const { team, openMobileDialog, players, teams } = this.state;
+        const { classes } = this.props;
 
         return (
             <Fragment>
@@ -83,7 +94,7 @@ class Teams extends Component {
                     <Hidden mdUp>
                         <MobileDialog openMobileDialog={openMobileDialog} handleClose={this.handleClose}>
                             <Team team={team} players={players.filter(p => p.team === team.name)} />
-                        </MobileDialog> 
+                        </MobileDialog>
                     </Hidden>
                 </Grid>
             </Fragment>

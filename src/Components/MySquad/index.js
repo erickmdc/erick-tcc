@@ -9,44 +9,53 @@ const styles = {
     card: {
         minWidth: 275,
         justifyContent: 'center'
-      },
-      bullet: {
+    },
+    bullet: {
         display: 'inline-block',
         margin: '0 2px',
         transform: 'scale(0.8)',
-      },
-      title: {
+    },
+    title: {
         marginBottom: 16,
         fontSize: 14,
-      },
-      pos: {
+    },
+    pos: {
         marginBottom: 12,
-      },
-      CardContent: {
+    },
+    CardContent: {
         justifyContent: 'center'
-      }
+    }
 };
 
 class MySquad extends Component {
+    state = {
+        squad: []
+    }
 
     orderByPosition = (a, b) => {
-        if(a.position === "Goleiro") return -1;
-        if(a.position === b.position) return 0;
+        if (a.position === "Goleiro") return -1;
+        if (a.position === b.position) return 0;
         return 1;
     }
 
     process = squad => {
         if (squad.length === 5) return squad;
 
-        for(let x=squad.length; x<5; x++) {
+        for (let x = squad.length; x < 5; x++) {
             squad.push({});
         }
 
         return squad.sort(this.orderByPosition);
     }
 
+    componentDidMount() {
+        fetch('http://localhost:3002/mySquad')
+            .then(res => res.json())
+            .then(squad => this.setState({ squad }))
+    }
+
     render() {
-        const { squad } = this.props;
+        const { squad } = this.state;
 
         return (
             <Fragment>

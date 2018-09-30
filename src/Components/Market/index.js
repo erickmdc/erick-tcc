@@ -33,6 +33,8 @@ class Market extends Component {
         loading: false,
         openMobileDialog: false,
         orderBy: 'price',
+        players: [],
+        teams: [],
         filters: {
             team: '',
             name: '',
@@ -118,13 +120,22 @@ class Market extends Component {
 
     refine = players => {
         return players.filter(this.filterByTeam)
-               .filter(this.filterByName)
-               .filter(this.filterByPosition);
+            .filter(this.filterByName)
+            .filter(this.filterByPosition);
+    }
+
+    componentDidMount() {
+        fetch('http://localhost:3002/players')
+            .then(res => res.json())
+            .then(players => this.setState({ players }))
+        fetch('http://localhost:3002/teams')
+            .then(res => res.json())
+            .then(teams => this.setState({ teams }))
     }
 
     render() {
-        const { filters, positions, sorts, orderBy, loading, openMobileDialog } = this.state;
-        const { classes, teams, players } = this.props;
+        const { filters, positions, sorts, orderBy, loading, openMobileDialog, teams, players } = this.state;
+        const { classes } = this.props;
 
         return (
             <Fragment>
@@ -153,7 +164,7 @@ class Market extends Component {
                     </MobileDialog>
                 </Hidden>
                 {loading ? (<CircularProgress className={classes.progress} />) : this.refine(players).map(player => {
-                    return <PlayerCard player={player} key={player.id}/>
+                    return <PlayerCard player={player} key={player.id} />
                 })}
             </Fragment>
         );
