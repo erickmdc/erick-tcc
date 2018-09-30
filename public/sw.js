@@ -13,7 +13,7 @@ self.addEventListener('activate', function (event) {
 
 self.addEventListener('fetch', function (event) {
   if (event.request.url.includes('/players')) {
-    var init = { "status" : 200, "statusText": "ok" };
+    var init = { "status": 200, "statusText": "ok" };
     event.respondWith(getPlayers().then(players => new Response(JSON.stringify(players), init)));
     event.waitUntil(update(event.request))
     //.then(response => refresh(response)));
@@ -95,7 +95,7 @@ function addPlayers(players) {
     var tx = db.transaction('players', 'readwrite');
     var store = tx.objectStore('players');
     var storePlayers = await store.getAll();
-    if(players.sort() === storePlayers.sort())
+    if (players.sort(orderById) === storePlayers.sort(orderById))
       return;
 
     return Promise.all(players.map(player => {
@@ -190,4 +190,15 @@ function getPlayers() {
     var store = tx.objectStore('players');
     return store.getAll();
   });
+}
+
+function orderById(a, b) {
+  if (parseInt(a.id) < parseInt(b.id))
+    return -1;
+
+  if (parseInt(a.id) > parseInt(b.id))
+    return 1;
+
+  if (parseInt(a.id) === parseInt(b.id))
+    return 0;
 }
