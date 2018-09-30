@@ -15,8 +15,8 @@ self.addEventListener('fetch', function (event) {
   if (event.request.url.includes('/players')) {
     var init = { "status": 200, "statusText": "ok" };
     event.respondWith(getPlayers().then(players => new Response(JSON.stringify(players), init)));
-    event.waitUntil(update(event.request))
-    //.then(response => refresh(response)));
+    event.waitUntil(update(event.request)
+    .then(response => refresh(response)));
   }
 });
 
@@ -29,10 +29,10 @@ self.addEventListener('fetch', function (event) {
 
 function update(request) {
   return fetch(request)
-    .then(res => res.json())
-    .then(players => {
+    .then(async function (res) {
+      var players = await res.json();
       addPlayers(players);
-      return players;
+      return res;
     });
 }
 
