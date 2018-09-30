@@ -49,7 +49,7 @@ class MySquad extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:3002/mySquad')
+        fetch('https://store-tcc.herokuapp.com/mySquad')
             .then(res => res.json())
             .then(squad => this.setState({ squad }))
     }

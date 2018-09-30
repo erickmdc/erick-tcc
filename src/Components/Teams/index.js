@@ -49,10 +49,10 @@ class Teams extends Component {
     };
 
     componentDidMount() {
-        fetch('http://localhost:3002/players')
+        fetch('https://store-tcc.herokuapp.com/players')
             .then(res => res.json())
             .then(players => this.setState({ players }))
-        fetch('http://localhost:3002/teams')
+        fetch('https://store-tcc.herokuapp.com/teams')
             .then(res => res.json())
             .then(teams => this.setState({ teams }))
     }
