@@ -94,13 +94,10 @@ function addPlayers(players) {
   idb.open('cartola-database').then(async function (db) {
     var tx = db.transaction('players', 'readwrite');
     var store = tx.objectStore('players');
-    var storePlayers = await store.getAll();
-    if (JSON.stringify(players.sort(orderById)) === JSON.stringify(storePlayers.sort(orderById)))
-      return;
 
     return Promise.all(players.map(player => {
       console.log('Adding player: ', player.name);
-      return store.put(player, player.id);
+      return store.put(player);
     })
     ).catch(e => {
       tx.abort();
