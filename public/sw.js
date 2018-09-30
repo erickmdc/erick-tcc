@@ -13,7 +13,8 @@ self.addEventListener('activate', function (event) {
 
 self.addEventListener('fetch', function (event) {
   if (event.request.url.includes('/players')) {
-    event.respondWith(getPlayers());
+    var init = { "status" : 200, "statusText": "ok" };
+    event.respondWith(new Response(getPlayers(), init));
     event.waitUntil(update(event.request))
     //.then(response => refresh(response)));
   }
@@ -28,10 +29,9 @@ self.addEventListener('fetch', function (event) {
 
 function update(request) {
   return fetch(request)
-    .then(res => res.json())
-    .then(players => {
-      addPlayers(players);
-      return players;
+    .then(res => {
+      addPlayers(res.json());
+      return res;
     });
 }
 
