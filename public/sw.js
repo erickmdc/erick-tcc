@@ -14,7 +14,7 @@ self.addEventListener('activate', function (event) {
 self.addEventListener('fetch', function (event) {
   if (event.request.url.includes('/players')) {
     var init = { "status" : 200, "statusText": "ok" };
-    event.respondWith(getPlayers().then(players => new Response(players, init)));
+    event.respondWith(getPlayers().then(players => new Response(JSON.stringify(players), init)));
     event.waitUntil(update(event.request))
     //.then(response => refresh(response)));
   }
