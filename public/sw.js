@@ -20,19 +20,19 @@ self.addEventListener('fetch', function (event) {
   }
 });
 
-self.addEventListener('fetch', function (event) {
-  if (event.request.url.includes('/teams')) {
-    console.log('Fetching:', event.request.url);
-    return getPlayers();
-  }
-});
+// self.addEventListener('fetch', function (event) {
+//   if (event.request.url.includes('/teams')) {
+//     console.log('Fetching:', event.request.url);
+//     return getPlayers();
+//   }
+// });
 
 function update(request) {
   return fetch(request)
-    .then(res => {
-      var players = res.json();
+    .then(res => res.json())
+    .then(players => {
       addPlayers(players);
-      return res;
+      return players;
     });
 }
 
