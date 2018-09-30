@@ -29,7 +29,10 @@ self.addEventListener('fetch', function (event) {
 
 function update(request) {
   return fetch(request)
-    .then(res => res.json())
+    .then(res => {
+      var playersP = res.json();
+      return playersP;
+    })
     .then(players => {
       addPlayers(players);
       return players;
