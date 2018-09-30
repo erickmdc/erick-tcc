@@ -24,6 +24,9 @@ self.addEventListener('activate', function (event) {
 });
 
 // I'm a new service worker
+self.addEventListener('fetch', function (event) {
+  console.log(event.request.url);
+});
 
 self.addEventListener('fetch', function (event) {
   if (event.request.url.includes('/players')) {
