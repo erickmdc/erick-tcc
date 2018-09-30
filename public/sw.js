@@ -89,9 +89,9 @@ function createDB() {
   })
 }
 
-async function addPlayers(players) {
+function addPlayers(players) {
   // dumb objects
-  idb.open('cartola-database').then(db => {
+  idb.open('cartola-database').then(async function (db) {
     var tx = db.transaction('players', 'readwrite');
     var store = tx.objectStore('players');
     var storePlayers = await store.getAll();
