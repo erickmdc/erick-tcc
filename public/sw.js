@@ -3,7 +3,7 @@ var CACHE_NAME = 'my-pwa-cache-v1';
 var urlsToCache = [
   '/',
   '/index.html',
-  '/static/js',
+  '/static/js/bundle.js',
   '/idb.js'
 ];
 
