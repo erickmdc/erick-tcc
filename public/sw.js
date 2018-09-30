@@ -95,7 +95,7 @@ function addPlayers(players) {
     var tx = db.transaction('players', 'readwrite');
     var store = tx.objectStore('players');
     var storePlayers = await store.getAll();
-    if (players.sort(orderById) === storePlayers.sort(orderById))
+    if (JSON.stringify(players.sort(orderById)) === JSON.stringify(storePlayers.sort(orderById)))
       return;
 
     return Promise.all(players.map(player => {
