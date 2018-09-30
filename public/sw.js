@@ -3,6 +3,7 @@ self.importScripts('idb.js');
 self.addEventListener('install', function (event) {
   event.waitUntil(createDB());
   console.log('Service worker installing...');
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', function (event) {
@@ -15,23 +16,34 @@ self.addEventListener('fetch', function (event) {
   if (event.request.url.includes('/players')) {
     var init = { "status": 200, "statusText": "ok" };
     event.respondWith(getPlayers().then(players => new Response(JSON.stringify(players), init)));
-    event.waitUntil(update(event.request)
+    event.waitUntil(updatePlayers(event.request)
     .then(response => refresh(response)));
   }
 });
 
-// self.addEventListener('fetch', function (event) {
-//   if (event.request.url.includes('/teams')) {
-//     console.log('Fetching:', event.request.url);
-//     return getPlayers();
-//   }
-// });
+self.addEventListener('fetch', function (event) {
+  if (event.request.url.includes('/teams')) {
+    var init = { "status": 200, "statusText": "ok" };
+    event.respondWith(getTeams().then(teams => new Response(JSON.stringify(teams), init)));
+    event.waitUntil(updateTeams(event.request)
+    .then(response => refresh(response)));
+  }
+});
 
-function update(request) {
+function updatePlayers(request) {
   return fetch(request)
     .then(async function (res) {
       var players = await res.json();
       addPlayers(players);
+      return res;
+    });
+}
+
+function updateTeams(request) {
+  return fetch(request)
+    .then(async function (res) {
+      var teams = await res.json();
+      addTeams(teams);
       return res;
     });
 }
@@ -162,7 +174,7 @@ function addTeams(teams) {
 
     return Promise.all(teams.map(item => {
       console.log('Adding item: ', item);
-      return store.add(item);
+      return store.put(item);
     })
     ).catch(e => {
       tx.abort();
