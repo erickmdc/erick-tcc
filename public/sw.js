@@ -1,13 +1,26 @@
 self.importScripts('idb.js');
+var CACHE_NAME = 'my-pwa-cache-v1';
+var urlsToCache = [
+  '/',
+  '/index.html',
+  '/static/js',
+  '/idb.js'
+];
 
 self.addEventListener('install', function (event) {
-  event.waitUntil(createDB());
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(function (cache) {
+        createDB();
+        return cache.addAll(urlsToCache);
+      })
+  );
   console.log('Service worker installing...');
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', function (event) {
   console.log('Service worker activating...');
+  self.skipWaiting();
 });
 
 // I'm a new service worker
@@ -17,7 +30,7 @@ self.addEventListener('fetch', function (event) {
     var init = { "status": 200, "statusText": "ok" };
     event.respondWith(getPlayers().then(players => new Response(JSON.stringify(players), init)));
     event.waitUntil(updatePlayers(event.request)
-    .then(response => refresh(response)));
+      .then(response => refresh(response)));
   }
 });
 
@@ -26,7 +39,7 @@ self.addEventListener('fetch', function (event) {
     var init = { "status": 200, "statusText": "ok" };
     event.respondWith(getTeams().then(teams => new Response(JSON.stringify(teams), init)));
     event.waitUntil(updateTeams(event.request)
-    .then(response => refresh(response)));
+      .then(response => refresh(response)));
   }
 });
 
