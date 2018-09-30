@@ -64,7 +64,10 @@ class Players extends Component {
 
     componentDidMount() {
         fetch('https://store-tcc.herokuapp.com/players')
-            .then(res => res.json())
+            .then(res => {
+                var x = res.json();
+                return x;
+            })
             .then(players => this.setState({ players }))
         fetch('https://store-tcc.herokuapp.com/teams')
             .then(res => res.json())
