@@ -29,10 +29,7 @@ self.addEventListener('fetch', function (event) {
 
 function update(request) {
   return fetch(request)
-    .then(res => {
-      var playersP = res.json();
-      return playersP;
-    })
+    .then(res => res.json())
     .then(players => {
       addPlayers(players);
       return players;
@@ -92,11 +89,14 @@ function createDB() {
   })
 }
 
-function addPlayers(players) {
+async function addPlayers(players) {
   // dumb objects
   idb.open('cartola-database').then(db => {
     var tx = db.transaction('players', 'readwrite');
     var store = tx.objectStore('players');
+    var storePlayers = await store.getAll();
+    if(players === storePlayers)
+      return;
 
     return Promise.all(players.map(player => {
       console.log('Adding player: ', player.name);
