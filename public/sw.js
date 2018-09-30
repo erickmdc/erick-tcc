@@ -100,7 +100,7 @@ function addPlayers(players) {
 
     return Promise.all(players.map(player => {
       console.log('Adding player: ', player.name);
-      return store.add(player);
+      return store.put(player, player.id);
     })
     ).catch(e => {
       tx.abort();
