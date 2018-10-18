@@ -46,6 +46,15 @@ self.addEventListener('fetch', function (event) {
   }
 });
 
+self.addEventListener('fetch', function (event) {
+  if (event.request.url.includes('/mySquad')) {
+    var init = { "status": 200, "statusText": "ok" };
+    event.respondWith(getTeams().then(teams => new Response(JSON.stringify(teams), init)));
+    event.waitUntil(updateTeams(event.request)
+      .then(response => refresh(response)));
+  }
+});
+
 function updatePlayers(request) {
   return fetch(request)
     .then(async function (res) {
@@ -93,26 +102,22 @@ function createDB() {
       case 1:
         console.log('Creating the players object store');
         upgradeDb.createObjectStore('players', { keyPath: 'id' });
-
-      case 2:
-        console.log('Creating a name index');
+        console.log('Creating name, team and price index');
         store = upgradeDb.transaction.objectStore('players');
-        store.createIndex('name', 'name', { unique: true });
-
-      case 3:
-        console.log('Creating a team and price index');
-        store = upgradeDb.transaction.objectStore('players');
+        store.createIndex('name', 'name');
         store.createIndex('team', 'team');
         store.createIndex('price', 'price');
 
-      case 4:
+      case 2:
         console.log('Creating the teams object store');
         upgradeDb.createObjectStore('teams', { keyPath: 'id' });
-
-      case 5:
-        console.log('Creating a name index');
         store = upgradeDb.transaction.objectStore('teams');
-        store.createIndex('name', 'name', { unique: true });
+        store.createIndex('name', 'name');
+
+      case 3:
+        console.log('Creating the mySquad object store');
+        upgradeDb.createObjectStore('mySquad', { keyPath: 'id' });
+        store = upgradeDb.transaction.objectStore('mySquad');
     }
   })
 }
@@ -123,11 +128,8 @@ function addPlayers(players) {
     var tx = db.transaction('players', 'readwrite');
     var store = tx.objectStore('players');
 
-    return Promise.all(players.map(player => {
-      console.log('Adding player: ', player.name);
-      return store.put(player);
-    })
-    ).catch(e => {
+    return Promise.all(players.map(player => store.put(player)))
+    .catch(e => {
       tx.abort();
       console.log(e);
     }).then(() => {
@@ -188,11 +190,8 @@ function addTeams(teams) {
     let tx = db.transaction('teams', 'readwrite');
     let store = tx.objectStore('teams');
 
-    return Promise.all(teams.map(item => {
-      console.log('Adding item: ', item);
-      return store.put(item);
-    })
-    ).catch(e => {
+    return Promise.all(teams.map(item => store.put(item)))
+    .catch(e => {
       tx.abort();
       console.log(e);
     }).then(() => {
