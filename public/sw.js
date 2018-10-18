@@ -23,6 +23,14 @@ self.addEventListener('activate', function (event) {
   self.skipWaiting();
 });
 
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+      caches.match(event.request).then(function(match){
+          return match || fetch(event.request);
+      })
+  );
+});
+
 // I'm a new service worker
 self.addEventListener('fetch', function (event) {
   console.log(event.request.url);
