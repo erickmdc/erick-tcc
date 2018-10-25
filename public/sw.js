@@ -23,13 +23,13 @@ self.addEventListener('activate', function (event) {
   self.skipWaiting();
 });
 
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-      caches.match(event.request).then(function(match){
-          return match || fetch(event.request);
-      })
-  );
-});
+// self.addEventListener('fetch', function(event) {
+//   event.respondWith(
+//       caches.match(event.request).then(function(match){
+//           return match || fetch(event.request);
+//       })
+//   );
+// });
 
 // I'm a new service worker
 self.addEventListener('fetch', function (event) {
@@ -38,60 +38,62 @@ self.addEventListener('fetch', function (event) {
 
 self.addEventListener('fetch', function (event) {
   if (event.request.url.includes('/players')) {
-    var init = { "status": 200, "statusText": "ok" };
-    event.respondWith(getPlayers().then(players => new Response(JSON.stringify(players), init)));
-    event.waitUntil(updatePlayers(event.request)
-      .then(response => refresh(response)));
+    event.respondWith(returnPlayers(event));
   }
-});
-
-self.addEventListener('fetch', function (event) {
   if (event.request.url.includes('/teams')) {
-    var init = { "status": 200, "statusText": "ok" };
-    event.respondWith(getTeams().then(teams => new Response(JSON.stringify(teams), init)));
-    event.waitUntil(updateTeams(event.request)
-      .then(response => refresh(response)));
+    event.respondWith(returnTeams(event));
   }
-});
-
-self.addEventListener('fetch', function (event) {
   if (event.request.url.includes('/mySquad')) {
-    var init = { "status": 200, "statusText": "ok" };
-    event.respondWith(getTeams().then(teams => new Response(JSON.stringify(teams), init)));
-    event.waitUntil(updateTeams(event.request)
-      .then(response => refresh(response)));
+    event.respondWith(returnMySquad(event));
   }
 });
 
-function updatePlayers(request) {
-  return fetch(request)
-    .then(async function (res) {
-      var players = await res.json();
-      addPlayers(players);
-      return res;
-    });
+function returnPlayers(event) {
+  var init = { "status": 200, "statusText": "ok" };
+  if (navigator.onLine) {
+    return fetch(event.request)
+      .then(res => res.json())
+      .then(players => addPlayers(players))
+      .then(() => getPlayers())
+      .then(players => new Response(JSON.stringify(players), init))
+      .catch(e => e);
+  } else {
+    return getPlayers()
+      .then(players => new Response(JSON.stringify(players), init))
+      .catch(e => e);
+  }
 }
 
-function updateTeams(request) {
-  return fetch(request)
-    .then(async function (res) {
-      var teams = await res.json();
-      addTeams(teams);
-      return res;
-    });
+function returnTeams(event) {
+  var init = { "status": 200, "statusText": "ok" };
+  if (navigator.onLine) {
+    return fetch(event.request)
+      .then(res => res.json())
+      .then(teams => addTeams(teams))
+      .then(() => getTeams())
+      .then(teams => new Response(JSON.stringify(teams), init))
+      .catch(e => e);
+  } else {
+    return getTeams()
+      .then(teams => new Response(JSON.stringify(teams), init))
+      .catch(e => e);
+  }
 }
 
-function refresh(response) {
-  return self.clients.matchAll().then(function (clients) {
-    clients.forEach(function (client) {
-      var message = {
-        type: 'refresh',
-        url: response.url,
-        eTag: response.headers.get('ETag')
-      };
-      client.postMessage(JSON.stringify(message));
-    });
-  });
+function returnMySquad(event) {
+  var init = { "status": 200, "statusText": "ok" };
+  if (navigator.onLine) {
+    return fetch(event.request)
+      .then(res => res.json())
+      .then(squad => updateMySquad(squad))
+      .then(() => getMySquad())
+      .then(mySquad => new Response(JSON.stringify(mySquad), init))
+      .catch(e => e);
+  } else {
+    return getMySquad()
+      .then(mySquad => new Response(JSON.stringify(mySquad), init))
+      .catch(e => e);
+  }
 }
 
 function test() {
@@ -128,22 +130,6 @@ function createDB() {
         store = upgradeDb.transaction.objectStore('mySquad');
     }
   })
-}
-
-function addPlayers(players) {
-  // dumb objects
-  idb.open('cartola-database').then(async function (db) {
-    var tx = db.transaction('players', 'readwrite');
-    var store = tx.objectStore('players');
-
-    return Promise.all(players.map(player => store.put(player)))
-    .catch(e => {
-      tx.abort();
-      console.log(e);
-    }).then(() => {
-      console.log('All players added successfully!');
-    });
-  });
 }
 
 function getByName(key) {
@@ -199,12 +185,12 @@ function addTeams(teams) {
     let store = tx.objectStore('teams');
 
     return Promise.all(teams.map(item => store.put(item)))
-    .catch(e => {
-      tx.abort();
-      console.log(e);
-    }).then(() => {
-      console.log('All items added successfully!');
-    });
+      .catch(e => {
+        tx.abort();
+        console.log(e);
+      }).then(() => {
+        console.log('All items added successfully!');
+      });
   });
 }
 
@@ -216,10 +202,51 @@ function getTeams() {
   });
 }
 
+function addPlayers(players) {
+  // dumb objects
+  idb.open('cartola-database').then(async function (db) {
+    var tx = db.transaction('players', 'readwrite');
+    var store = tx.objectStore('players');
+
+    return Promise.all(players.map(player => store.put(player)))
+      .catch(e => {
+        tx.abort();
+        console.log(e);
+      }).then(() => {
+        console.log('All players added successfully!');
+      });
+  });
+}
+
 function getPlayers() {
   return idb.open('cartola-database').then(db => {
     var tx = db.transaction('players', 'readonly');
     var store = tx.objectStore('players');
+    return store.getAll();
+  });
+}
+
+function updateMySquad(mySquad) {
+  idb.open('cartola-database').then(async function (db) {
+    var tx = db.transaction('mySquad', 'readwrite');
+    var store = tx.objectStore('mySquad');
+
+    return store.clear().then(() => {
+      return Promise.all(mySquad.map(player => store.put(player)))
+        .catch(e => {
+          tx.abort();
+          console.log(e);
+        }).then(() => {
+          console.log('All players saved on MySquad successfully!');
+        });
+    })
+  });
+}
+
+function getMySquad() {
+  return idb.open('cartola-database').then(db => {
+    var tx = db.transaction('mySquad', 'readonly');
+    var store = tx.objectStore('mySquad');
     return store.getAll();
   });
 }
