@@ -37,7 +37,7 @@ const styles = {
     }
 }
 
-export default withStyles(styles)(({ player, classes }) =>
+export default withStyles(styles)(({ player, classes, handleSell, handleBuy }) =>
     <Card className={classes.card}>
         <CardContent className={classes.cardContent}>
             <Grid container justify="center" alignItems="center">
@@ -118,9 +118,16 @@ export default withStyles(styles)(({ player, classes }) =>
                     </Grid>
                 </Grid>
                 <Grid item sm={2} xs={6}>
-                    <Button className={classes.actionButton} variant="contained" color="primary">
-                        Comprar
-                    </Button>
+                    {(player.isOnSquad)
+                        ?
+                        <Button className={classes.actionButton} onClick={() => handleSell(player.id)} variant="contained" color="secondary">
+                            Vender
+                        </Button>
+                        :
+                        <Button className={classes.actionButton} onClick={() => handleBuy(player.id)} variant="contained" color="primary">
+                            Comprar
+                        </Button>
+                    }
                 </Grid>
             </Grid>
         </CardContent>

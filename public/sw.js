@@ -37,15 +37,15 @@ self.addEventListener('fetch', function (event) {
 });
 
 self.addEventListener('fetch', function (event) {
-  if (event.request.url.includes('/players')) {
-    event.respondWith(returnPlayers(event));
-  }
-  if (event.request.url.includes('/teams')) {
-    event.respondWith(returnTeams(event));
-  }
-  if (event.request.url.includes('/mySquad')) {
-    event.respondWith(returnMySquad(event));
-  }
+  // if (event.request.url.includes('/players') && event.request.method === 'GET') {
+  //   event.respondWith(returnPlayers(event));
+  // }
+  // if (event.request.url.includes('/teams') && event.request.method === 'GET') {
+  //   event.respondWith(returnTeams(event));
+  // }
+  // if (event.request.url.includes('/mySquad') && event.request.method === 'GET') {
+  //   event.respondWith(returnMySquad(event));
+  // }
 });
 
 function returnPlayers(event) {

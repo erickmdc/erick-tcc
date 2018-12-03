@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import {
     withStyles, Typography, Card,
     CardContent, Button, Grid, Avatar
@@ -42,7 +43,7 @@ const styles = {
 class Squad extends Component {
 
     testFetch() {
-        fetch('http://localhost:3002/players')
+        fetch('https://store-tcc.herokuapp.com/players')
             .then(res => res.json())
             .then(p => {
                 let x = p;
@@ -51,13 +52,13 @@ class Squad extends Component {
     }
 
     render() {
-        const { squad, classes } = this.props;
+        const { squad, classes, handleSell } = this.props;
 
         return (
             <Fragment>
                 {squad.map((player, index) => {
                     return (player.id !== undefined) ?
-                        <Card className={classes.card} key={player.id}>
+                        <Card className={classes.card} key={index}>
                             <CardContent className={classes.cardContent}>
                                 <Grid container justify="center" alignItems="center">
                                     <Grid item sm={5} xs={8}>
@@ -109,7 +110,7 @@ class Squad extends Component {
                                             <Grid item xs={2}>
                                                 <Typography variant="title" style={{ textAlign: 'center' }}>
                                                     X
-                                            </Typography>
+                                                </Typography>
                                             </Grid>
                                             <Grid item sm={4} xs={4}>
                                                 <Avatar className={classes.teamAvatar} src="https://ssl.gstatic.com/images/branding/product/1x/contribute_36dp.png" />
@@ -118,9 +119,9 @@ class Squad extends Component {
                                         </Grid>
                                     </Grid>
                                     <Grid item sm={2} xs={6}>
-                                        <Button className={classes.actionButton} variant="contained" color="secondary">
+                                        <Button className={classes.actionButton} onClick={() => handleSell(player.id)} variant="contained" color="secondary">
                                             Vender
-                                    </Button>
+                                        </Button>
                                     </Grid>
                                 </Grid>
                             </CardContent>
@@ -178,7 +179,7 @@ class Squad extends Component {
                                             <Grid item xs={2}>
                                                 <Typography variant="title" style={{ textAlign: 'center' }}>
                                                     X
-                                            </Typography>
+                                                </Typography>
                                             </Grid>
                                             <Grid item sm={4} xs={4}>
                                                 <Avatar className={classes.teamAvatar} src="https://ssl.gstatic.com/images/branding/product/1x/contribute_36dp.png" />
@@ -187,9 +188,11 @@ class Squad extends Component {
                                         </Grid>
                                     </Grid>
                                     <Grid item sm={2} xs={6}>
-                                        <Button className={classes.actionButton} onClick={this.testFetch} variant="contained" color="primary">
-                                            Comprar
-                                    </Button>
+                                        <Link to="/Market">
+                                            <Button className={classes.actionButton} variant="contained" color="primary">  
+                                                    Comprar
+                                            </Button>
+                                        </Link>
                                     </Grid>
                                 </Grid>
                             </CardContent>
